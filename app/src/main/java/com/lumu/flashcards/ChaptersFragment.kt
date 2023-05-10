@@ -1,4 +1,5 @@
 package com.lumu.flashcards
+
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -8,18 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class CategoriesFragment : Fragment(), MyCategoriesRecyclerViewAdapter.OnCategoryItemClickListener {
-    private var columnCount = 1
-    override fun onCategoryItemClick(category: Category) {
-        val fragment = ChaptersFragment.newInstance(1, category)
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
+class ChaptersFragment(
+    private var columnCount: Int = 1,
+    private val chapters_list: List<String>) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
@@ -29,9 +25,8 @@ class CategoriesFragment : Fragment(), MyCategoriesRecyclerViewAdapter.OnCategor
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val currentFragmentInstance=this
-        val view = inflater.inflate(R.layout.fragment_item_list, container, false)
-        val categories :List<Category> = enumValues<Category>().toList()
+        val view = inflater.inflate(R.layout.fragment_chapters_list, container, false)
+
         // Set the adapter
         if (view is RecyclerView) {
             with(view) {
@@ -39,9 +34,8 @@ class CategoriesFragment : Fragment(), MyCategoriesRecyclerViewAdapter.OnCategor
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyCategoriesRecyclerViewAdapter(categories, currentFragmentInstance)
+                adapter = MyChaptersRecyclerViewAdapter(chapters_list)
             }
-
         }
         return view
     }
@@ -52,8 +46,8 @@ class CategoriesFragment : Fragment(), MyCategoriesRecyclerViewAdapter.OnCategor
 
         // TODO: Customize parameter initialization
         @JvmStatic
-        fun newInstance(columnCount: Int) =
-            CategoriesFragment().apply {
+        fun newInstance(columnCount: Int, category: Category) =
+            ChaptersFragment(columnCount, category.chapterList).apply {
                 arguments = Bundle().apply {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }

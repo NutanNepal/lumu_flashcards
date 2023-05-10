@@ -20,6 +20,5 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.fragmentContainerView, CategoriesFragment())
         // Commit the transaction
         fragmentTransaction.commit()
-
     }
 }
