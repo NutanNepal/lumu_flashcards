@@ -23,7 +23,7 @@ class CategoriesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
-        val categories :List<String> = arrayListOf("Subjects", "Topics", "Exercises", "Everything")
+        val categories :List<String> = CategoryData.getCategoryNames()
         // Set the adapter
         if (view is RecyclerView) {
             with(view) {
