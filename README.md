@@ -1,2 +1,0 @@
-# lumu_flashcards
- 

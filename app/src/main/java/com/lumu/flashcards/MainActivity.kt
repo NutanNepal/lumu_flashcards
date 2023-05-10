@@ -1,9 +1,7 @@
 package com.lumu.flashcards
 
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.WindowCompat
 
 class MainActivity : AppCompatActivity() {
