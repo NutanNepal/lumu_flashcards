@@ -13,12 +13,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.xmlpull.v1.XmlPullParser
 
-class FlashcardActivity(
-    private var chapter: String
-) : FragmentActivity() {
+class FlashcardActivity: FragmentActivity() {
 
-    // Secondary constructor that initializes the chapter with an empty string
-    constructor() : this("")
 
     // Views
     private lateinit var viewPager: ViewPager2
@@ -32,7 +28,7 @@ class FlashcardActivity(
         setContentView(R.layout.activity_flashcard)
 
         // Set the chapter title from the extra provided by the intent
-        chapter = intent?.getStringExtra(CHAPTER).toString()
+        val chapter = intent?.getStringExtra(CHAPTER).toString()
         this.findViewById<TextView>(R.id.flashcard_title).text = chapter
 
         // Get the ViewPager element from the layout
@@ -50,9 +46,9 @@ class FlashcardActivity(
 
     inner class FlashcardPagerAdapter(fragmentManager: FragmentManager) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
-
+        private val chapter = intent?.getStringExtra(CHAPTER).toString()
         // Flashcard list
-        private val flashcards = parseFlashcards(chapter)
+        private val flashcards = parseFlashcards(chapter).shuffled()
 
         // Return the number of flashcards
         override fun getItemCount(): Int = flashcards.size

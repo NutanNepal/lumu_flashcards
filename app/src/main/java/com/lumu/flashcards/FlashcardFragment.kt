@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 class FlashcardFragment(
     private val question: String,
     private val answer: String) : Fragment() {
+    constructor():this("","")
 
     private lateinit var cardView: CardView
     private lateinit var questionTextView: TeXView
@@ -39,7 +40,6 @@ class FlashcardFragment(
                 flipCardBack()
             }
         }
-
     }
 
     private fun flipCard() {

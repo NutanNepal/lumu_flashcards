@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(),
         this@MainActivity.findViewById<TextView>(R.id.textView).text = currentTitle
 
         // Replace the current fragment with a new ChaptersFragment for the selected category
-        val fragment = ChaptersFragment.newInstance(1, category)
+        val fragment = ChaptersFragment.newInstance(category)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainerView, fragment)
             .addToBackStack(null)

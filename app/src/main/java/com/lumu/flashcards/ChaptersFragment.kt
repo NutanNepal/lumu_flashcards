@@ -9,20 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class ChaptersFragment(
-    private var columnCount: Int = 1,
-    private val category: Category
-) : Fragment() {
-
+class ChaptersFragment(private val category: Category): Fragment() {
+    constructor() : this(Category.Subjects)
+        // initialize any fields you need to her
+    private var columnCount = 1
     // onCreate() is called when the fragment is created. It sets up the fragment's initial state.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Get the arguments passed to the fragment, if any.
-        // In this case, we're getting the number of columns to use in the RecyclerView.
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
     }
 
     // onCreateView() is called when the fragment should create its UI.
@@ -58,18 +51,10 @@ class ChaptersFragment(
 
     // This companion object contains constant values and a factory method for creating instances of this fragment.
     companion object {
-        // The name of the argument used to pass the number of columns to the fragment.
-        const val ARG_COLUMN_COUNT = "column-count"
 
         // Factory method for creating instances of this fragment.
         @JvmStatic
-        fun newInstance(columnCount: Int, category: Category) =
-            ChaptersFragment(columnCount, category).apply {
-                // Create a new Bundle object to hold the arguments.
-                arguments = Bundle().apply {
-                    // Put the column count value in the arguments.
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
+        fun newInstance(category: Category) =
+            ChaptersFragment(category)
             }
-    }
 }

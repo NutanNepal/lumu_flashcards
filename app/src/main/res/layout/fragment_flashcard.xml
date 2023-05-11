@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/flashcard_view"
-        android:layout_margin="20dp"
+        android:layout_margin="15dp"
         card_view:cardBackgroundColor="@color/material_dynamic_primary10"
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="8dp"
