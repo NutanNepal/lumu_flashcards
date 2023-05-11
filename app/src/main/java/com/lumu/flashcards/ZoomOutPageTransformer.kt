@@ -14,7 +14,7 @@ class ZoomOutPageTransformer : ViewPager2.PageTransformer {
             val pageHeight = height
             when {
                 position < -1 -> { // [-Infinity,-1)
-                    // This page is way off-screen to the left.
+                    // This page is way off-screen to the top.
                     alpha = 0f
                 }
                 position <= 1 -> { // [-1,1]
@@ -22,10 +22,10 @@ class ZoomOutPageTransformer : ViewPager2.PageTransformer {
                     val scaleFactor = MIN_SCALE.coerceAtLeast(1 - abs(position))
                     val vertMargin = pageHeight * (1 - scaleFactor) / 2
                     val horzMargin = pageWidth * (1 - scaleFactor) / 2
-                    translationX = if (position < 0) {
-                        horzMargin - vertMargin / 2
+                    translationY = if (position < 0) {
+                        vertMargin - horzMargin / 2
                     } else {
-                        horzMargin + vertMargin / 2
+                        vertMargin + horzMargin / 2
                     }
 
                     // Scale the page down (between MIN_SCALE and 1).
@@ -37,7 +37,7 @@ class ZoomOutPageTransformer : ViewPager2.PageTransformer {
                             (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
                 }
                 else -> { // (1,+Infinity]
-                    // This page is way off-screen to the right.
+                    // This page is way off-screen to the bottom.
                     alpha = 0f
                 }
             }

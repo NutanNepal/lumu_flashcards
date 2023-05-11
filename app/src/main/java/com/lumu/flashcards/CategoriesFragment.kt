@@ -15,7 +15,6 @@ class CategoriesFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val currentFragmentInstance=this
         val view = inflater.inflate(R.layout.fragment_category_list, container, false)
         val categories :List<Category> = enumValues<Category>().toList()
         // Set the adapter

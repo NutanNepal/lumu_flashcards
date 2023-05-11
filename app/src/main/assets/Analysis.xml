@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flashcards>
     <flashcard>
-        <question>Fatou's Lemma</question>
-        <answer>$\int_X{\lim\inf{f}}\leq\lim\inf{\int_X{f}}$</answer>
+        <question>\text{Fatou's Lemma}</question>
+        <answer>$$\int_X{\lim\inf{f}}\leq\lim\inf{\int_X{f}}$$ and asdafdgwefwrg</answer>
     </flashcard>
     <flashcard>
         <question>What does it mean for a set $X$ to be total in $L^p$?</question>

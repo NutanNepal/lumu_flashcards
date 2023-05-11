@@ -14,8 +14,8 @@ class FlashcardFragment(
     private val answer: String) : Fragment() {
 
     private lateinit var cardView: CardView
-    private lateinit var questionTextView: TextView
-    private lateinit var answerTextView: TextView
+    private lateinit var questionTextView: TeXView
+    private lateinit var answerTextView: TeXView
     private var isShowingQuestion = true
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,11 +27,11 @@ class FlashcardFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cardView= view.findViewById<CardView>(R.id.flashcard_view)
-        questionTextView = cardView.findViewById<TextView>(R.id.question_text_view)
-        answerTextView= cardView.findViewById<TextView>(R.id.answer_text_view)
-        questionTextView.text = question
-        answerTextView.text = answer
+        cardView= view.findViewById(R.id.flashcard_view)
+        questionTextView = cardView.findViewById(R.id.question_text_view)
+        answerTextView= cardView.findViewById(R.id.answer_text_view)
+        questionTextView.setLaTeX("\\text{$question}")
+        answerTextView.setLaTeX("\\text{$answer}")
         cardView.setOnClickListener {
             if (isShowingQuestion) {
                 flipCard()

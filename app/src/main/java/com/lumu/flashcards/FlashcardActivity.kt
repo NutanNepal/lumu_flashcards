@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Xml
-import android.view.MenuItem
+import android.widget.TextView
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -14,88 +14,76 @@ import androidx.viewpager2.widget.ViewPager2
 import org.xmlpull.v1.XmlPullParser
 
 class FlashcardActivity(
-    private var chapterlist: String
+    private var chapter: String
 ) : FragmentActivity() {
-    constructor(): this(""){}
+
+    // Secondary constructor that initializes the chapter with an empty string
+    constructor() : this("")
+
+    // Views
     private lateinit var viewPager: ViewPager2
-    private lateinit var adapter: FlashcardPagerAdapter
+    private lateinit var pagerAdapter: FlashcardPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        chapterlist= intent.getStringExtra(CHAPTERLIST).toString()
-        setContentView(R.layout.activity_flashcard)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        //supportActionBar?.hide()
+
+        // Set the content view for this activity
+        setContentView(R.layout.activity_flashcard)
+
+        // Set the chapter title from the extra provided by the intent
+        chapter = intent?.getStringExtra(CHAPTER).toString()
+        this.findViewById<TextView>(R.id.flashcard_title).text = chapter
 
         // Get the ViewPager element from the layout
         viewPager = findViewById(R.id.viewPager)
+
         // Create a new adapter for the ViewPager
-        val adapter = FlashcardPagerAdapter(supportFragmentManager)
+        pagerAdapter = FlashcardPagerAdapter(supportFragmentManager)
+
         // Set the adapter for the ViewPager
-        viewPager.adapter = adapter
+        viewPager.adapter = pagerAdapter
+
+        // Set the page transformer to the zoom out transformer
         viewPager.setPageTransformer(ZoomOutPageTransformer())
-
-        // Add a listener for page changes
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-
-            override fun onPageSelected(position: Int) {
-                // Update the title of the activity to the current flashcard
-                //supportActionBar?.title = adapter.getPageTitle(position)
-
-                // Check if the user has reached the last flashcard
-                //if (position == adapter.itemCount - 1) {
-                    // Show a dialog or message to let them know they have reached the end
-                    // ...
-                //}
-            }
-            /*
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-            }*/
-        })
     }
 
     inner class FlashcardPagerAdapter(fragmentManager: FragmentManager) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
-        private val flashcards = parse(chapterlist)
+
+        // Flashcard list
+        private val flashcards = parseFlashcards(chapter)
+
+        // Return the number of flashcards
         override fun getItemCount(): Int = flashcards.size
 
+        // Create a new instance of the FlashcardFragment for each page
         override fun createFragment(position: Int): Fragment {
-            // Create a new instance of the FlashcardFragment for each page
             val flashcard = flashcards[position]
             return FlashcardFragment.newInstance(flashcard.question, flashcard.answer)
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle back button clicks
-        if (item.itemId == android.R.id.home) {
-            //onBackPressed()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun parse(chapterlist: String): MutableList<Flashcards>{
-        val fileName = "$chapterlist.xml"
+    // Parse the flashcards from the XML file
+    private fun parseFlashcards(chapterList: String): MutableList<Flashcard> {
+        val fileName = "$chapterList.xml"
         val inputStream = fileName.let { assets.open(it) }
+
         // Create a new instance of the XmlPullParser interface
         val parser: XmlPullParser = Xml.newPullParser()
+
         // Set the input stream for the parser to the opened file
         parser.setInput(inputStream, null)
+
+        // Parse the XML file
         return parseXml(parser)
     }
 
-    private fun parseXml(parser: XmlPullParser): MutableList<Flashcards> {
-        val flashcards = mutableListOf<Flashcards>()
+    // Parse the XML file and return a list of flashcards
+    private fun parseXml(parser: XmlPullParser): MutableList<Flashcard> {
+        val flashcards = mutableListOf<Flashcard>()
         var eventType = parser.eventType
-        var currentFlashcard: Flashcards? = null
+        var currentFlashcard: Flashcard? = null
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
@@ -103,18 +91,21 @@ class FlashcardActivity(
                     when (parser.name) {
                         "flashcard" -> {
                             // Create a new Flashcard object when a <flashcard> tag is encountered
-                            currentFlashcard = Flashcards("", "")
+                            currentFlashcard = Flashcard("", "")
                         }
+
                         "question" -> {
                             // Set the question for the current Flashcard object when a <question> tag is encountered
                             currentFlashcard?.question = parser.nextText()
                         }
+
                         "answer" -> {
                             // Set the answer for the current Flashcard object when an <answer> tag is encountered
                             currentFlashcard?.answer = parser.nextText()
                         }
                     }
                 }
+
                 XmlPullParser.END_TAG -> {
                     if (parser.name == "flashcard") {
                         // Add the current Flashcard object to the list when a </flashcard> tag is encountered
@@ -129,16 +120,29 @@ class FlashcardActivity(
     }
 
     companion object {
-        private const val CHAPTERLIST = "chapter"
-        fun newIntent(context: Context, chapterlist: String): Intent{
-            return Intent(context, FlashcardActivity::class.java).apply{
-                putExtra(CHAPTERLIST, chapterlist)
+        private const val CHAPTER = "chapter"
+
+        /**
+         * Creates a new Intent for the FlashcardActivity
+         *
+         * @param context The context of the calling activity
+         * @param chapterlist The name of the chapter to load
+         * @return The Intent for starting the FlashcardActivity
+         */
+        fun newIntent(context: Context, chapterlist: String): Intent {
+            return Intent(context, FlashcardActivity::class.java).apply {
+                putExtra(CHAPTER, chapterlist)
             }
         }
     }
 }
 
-class Flashcards(
+/**
+* Represents a flashcard with a question and answer.
+* @property question The question on the flashcard
+* @property answer The answer on the flashcard
+ */
+class Flashcard(
     var question: String,
     var answer: String
 )
