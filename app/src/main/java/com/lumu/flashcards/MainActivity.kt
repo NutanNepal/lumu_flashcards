@@ -13,7 +13,8 @@ class MainActivity : AppCompatActivity(),
 
     private var currentTitle = "Categories"
     // Keep a reference to the current fragment
-    private var currentNavState: String = ""
+    var currentNavState: String = "home"
+
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.run {
             putString("CURRENT_NAV_STATE", currentNavState)
@@ -33,9 +34,11 @@ class MainActivity : AppCompatActivity(),
         // Set the initial title
         this.findViewById<TextView>(R.id.textView).text = currentTitle
 
-        currentNavState = CURRENT_NAV_STATE.orEmpty()
+        if (savedInstanceState != null) {
+            currentNavState = savedInstanceState.getString("CURRENT_NAV_STATE", currentNavState) ?: "home"
+        }
 
-        if (currentNavState ==""){
+        if (currentNavState == "home"){
             replaceFragmentContainer(R.id.fragmentContainerView,CategoriesFragment())
         }
         else{
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity(),
         // Replace the current fragment with a new ChaptersFragment for the selected category
         val fragment = ChaptersFragment.newInstance(category)
         replaceFragmentContainer(R.id.fragmentContainerView, fragment)
-
+        currentNavState = category.toString()
     }
 
     override fun onChapterItemClick(chapter: String) {
@@ -70,9 +73,5 @@ class MainActivity : AppCompatActivity(),
 
         // Commit the transaction
         fragmentTransaction.commit()
-    }
-
-    companion object{
-        val CURRENT_NAV_STATE:String? = null
     }
 }
