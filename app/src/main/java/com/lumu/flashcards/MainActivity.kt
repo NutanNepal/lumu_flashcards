@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity(),
         WindowCompat.setDecorFitsSystemWindows(window, false)
         supportActionBar?.hide()
 
-        // Set the initial title
-        this.findViewById<TextView>(R.id.textView).text = currentTitle
-
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
                 if (currentTitle == "Categories") {
@@ -40,9 +37,8 @@ class MainActivity : AppCompatActivity(),
                     finish()
                 } else {
                     // Otherwise, go back to the CategoriesFragment and update the title
-                    replaceFragmentContainer(R.id.fragmentContainerView, CategoriesFragment())
                     currentTitle = "Categories"
-                    findViewById<TextView>(R.id.textView).text = currentTitle
+                    replaceFragmentContainer(R.id.fragmentContainerView, CategoriesFragment())
                 }
             }
         }
@@ -60,16 +56,6 @@ class MainActivity : AppCompatActivity(),
             onCategoryItemClick(Category.valueOf(currentTitle))
         }
     }
-//    override fun onBackPressed() {
-//        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)
-//        if (currentFragment is ChaptersFragment) {
-//            currentTitle = "Categories"
-//            this.findViewById<TextView>(R.id.textView).text = currentTitle
-//            replaceFragmentContainer(R.id.fragmentContainerView, CategoriesFragment())
-//        } else {
-//            super.onBackPressed()
-//        }
-//    }
 
     override fun onCategoryItemClick(category: Category) {
         // Update the title with the selected category name
@@ -86,10 +72,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun replaceFragmentContainer(oldFragment: Int, newFragment: Fragment){
+        this.findViewById<TextView>(R.id.textView).text = currentTitle
         // Get the FragmentManager
         val fragmentManager = supportFragmentManager
-
-        // Begin a FragmentTransaction
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         // Replace the default fragment container with the list fragment

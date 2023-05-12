@@ -3,6 +3,7 @@ package com.lumu.flashcards
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Xml
 import android.widget.TextView
 import androidx.core.view.WindowCompat
@@ -12,13 +13,24 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import org.xmlpull.v1.XmlPullParser
+import kotlin.random.Random
 
 class FlashcardActivity: FragmentActivity() {
     // Views
     private lateinit var viewPager: ViewPager2
     private lateinit var pagerAdapter: FlashcardPagerAdapter
     //Saved flashcard instance state
-    private var currentPosition: Int = -1
+    private var currentPosition: Int = 0
+    private var currentSeed: Long = seed()
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        // Save the current position of the ViewPager
+        outState.run{
+            putInt(CURRENT_POSITION_KEY, currentPosition)
+            putLong(CURRENT_SEED, currentSeed)
+        }
+        super.onSaveInstanceState(outState)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,21 +54,38 @@ class FlashcardActivity: FragmentActivity() {
 
         // Set the page transformer to the zoom out transformer
         viewPager.setPageTransformer(ZoomOutPageTransformer())
+
+        // Restore the saved instance state if it exists
+        if (savedInstanceState != null) {
+            currentPosition = savedInstanceState.getInt(CURRENT_POSITION_KEY)
+            viewPager.currentItem = currentPosition
+        }
     }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        // Restore the current position of the ViewPager
+        currentPosition = savedInstanceState.getInt(CURRENT_POSITION_KEY)
+        currentSeed = savedInstanceState.getLong(CURRENT_SEED)
+        viewPager.currentItem = currentPosition
+    }
+
 
     inner class FlashcardPagerAdapter(fragmentManager: FragmentManager) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
         private val chapter = intent?.getStringExtra(CHAPTER).toString()
         // Flashcard list
-        public val flashcards = parseFlashcards(chapter).shuffled()
+        private val randomSeed = currentSeed
+        val flashcards = parseFlashcards(chapter).shuffled(Random(randomSeed))
 
         // Return the number of flashcards
         override fun getItemCount(): Int = flashcards.size
 
         // Create a new instance of the FlashcardFragment for each page
         override fun createFragment(position: Int): Fragment {
-            val flashcard = flashcards[position]
             currentPosition = position
+            val flashcard = flashcards[position]
             return FlashcardFragment.newInstance(flashcard.question, flashcard.answer)
         }
     }
@@ -116,8 +145,14 @@ class FlashcardActivity: FragmentActivity() {
         return flashcards
     }
 
+    private fun seed(): Long{
+        return SystemClock.currentThreadTimeMillis()
+    }
+
     companion object {
         private const val CHAPTER = "chapter"
+        var CURRENT_POSITION_KEY = "current_position"
+        var CURRENT_SEED = "current_seed"
 
         /**
          * Creates a new Intent for the FlashcardActivity

@@ -20,11 +20,6 @@ class ChaptersFragment(private val category: Category): Fragment() {
         super.onSaveInstanceState(savedInstanceState)
     }
 
-    // onCreate() is called when the fragment is created. It sets up the fragment's initial state.
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     // onCreateView() is called when the fragment should create its UI.
     override fun onCreateView(
         inflater: LayoutInflater,
