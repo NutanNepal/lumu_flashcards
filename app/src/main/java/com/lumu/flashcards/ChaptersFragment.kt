@@ -13,6 +13,13 @@ class ChaptersFragment(private val category: Category): Fragment() {
     constructor() : this(Category.Subjects)
         // initialize any fields you need to her
     private var columnCount = 1
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.run {
+            putString("CURRENT_NAV_STATE", category.toString())
+        }
+        super.onSaveInstanceState(savedInstanceState)
+    }
+
     // onCreate() is called when the fragment is created. It sets up the fragment's initial state.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +33,6 @@ class ChaptersFragment(private val category: Category): Fragment() {
     ): View? {
         // Inflate the fragment_chapters_list layout.
         val view = inflater.inflate(R.layout.fragment_chapters_list, container, false)
-
         // If the inflated view is a RecyclerView, set up the layout manager and adapter.
         if (view is RecyclerView) {
             with(view) {

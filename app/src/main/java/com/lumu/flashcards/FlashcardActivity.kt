@@ -14,11 +14,11 @@ import androidx.viewpager2.widget.ViewPager2
 import org.xmlpull.v1.XmlPullParser
 
 class FlashcardActivity: FragmentActivity() {
-
-
     // Views
     private lateinit var viewPager: ViewPager2
     private lateinit var pagerAdapter: FlashcardPagerAdapter
+    //Saved flashcard instance state
+    private var currentPosition: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,7 @@ class FlashcardActivity: FragmentActivity() {
         FragmentStateAdapter(fragmentManager, lifecycle) {
         private val chapter = intent?.getStringExtra(CHAPTER).toString()
         // Flashcard list
-        private val flashcards = parseFlashcards(chapter).shuffled()
+        public val flashcards = parseFlashcards(chapter).shuffled()
 
         // Return the number of flashcards
         override fun getItemCount(): Int = flashcards.size
@@ -56,6 +56,7 @@ class FlashcardActivity: FragmentActivity() {
         // Create a new instance of the FlashcardFragment for each page
         override fun createFragment(position: Int): Fragment {
             val flashcard = flashcards[position]
+            currentPosition = position
             return FlashcardFragment.newInstance(flashcard.question, flashcard.answer)
         }
     }
