@@ -3,6 +3,7 @@ package com.lumu.flashcards
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import io.nano.tex.LaTeX
@@ -12,12 +13,10 @@ class MainActivity : AppCompatActivity(),
     MyChaptersRecyclerViewAdapter.OnChapterItemClickListener{
 
     private var currentTitle = "Categories"
-    // Keep a reference to the current fragment
-    var currentNavState: String = "home"
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.run {
-            putString("CURRENT_NAV_STATE", currentNavState)
+            putString("CURRENT_NAV_STATE", currentTitle)
         }
         super.onSaveInstanceState(savedInstanceState)
     }
@@ -34,17 +33,43 @@ class MainActivity : AppCompatActivity(),
         // Set the initial title
         this.findViewById<TextView>(R.id.textView).text = currentTitle
 
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true /* enabled by default */) {
+            override fun handleOnBackPressed() {
+                if (currentTitle == "Categories") {
+                    // If already on the CategoriesFragment, call the default back behavior (exit the app)
+                    finish()
+                } else {
+                    // Otherwise, go back to the CategoriesFragment and update the title
+                    replaceFragmentContainer(R.id.fragmentContainerView, CategoriesFragment())
+                    currentTitle = "Categories"
+                    findViewById<TextView>(R.id.textView).text = currentTitle
+                }
+            }
+        }
+        // Add the callback to the activity's back stack
+        onBackPressedDispatcher.addCallback(this, callback)
+
         if (savedInstanceState != null) {
-            currentNavState = savedInstanceState.getString("CURRENT_NAV_STATE", currentNavState) ?: "home"
+            currentTitle = savedInstanceState.getString("CURRENT_NAV_STATE", currentTitle) ?: "Categories"
         }
 
-        if (currentNavState == "home"){
+        if (currentTitle == "Categories"){
             replaceFragmentContainer(R.id.fragmentContainerView,CategoriesFragment())
         }
         else{
-            onCategoryItemClick(Category.valueOf(currentNavState))
+            onCategoryItemClick(Category.valueOf(currentTitle))
         }
     }
+//    override fun onBackPressed() {
+//        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)
+//        if (currentFragment is ChaptersFragment) {
+//            currentTitle = "Categories"
+//            this.findViewById<TextView>(R.id.textView).text = currentTitle
+//            replaceFragmentContainer(R.id.fragmentContainerView, CategoriesFragment())
+//        } else {
+//            super.onBackPressed()
+//        }
+//    }
 
     override fun onCategoryItemClick(category: Category) {
         // Update the title with the selected category name
@@ -53,7 +78,6 @@ class MainActivity : AppCompatActivity(),
         // Replace the current fragment with a new ChaptersFragment for the selected category
         val fragment = ChaptersFragment.newInstance(category)
         replaceFragmentContainer(R.id.fragmentContainerView, fragment)
-        currentNavState = category.toString()
     }
 
     override fun onChapterItemClick(chapter: String) {
@@ -70,6 +94,9 @@ class MainActivity : AppCompatActivity(),
 
         // Replace the default fragment container with the list fragment
         fragmentTransaction.replace(oldFragment, newFragment)
+
+        // Add the current fragment to the back stack
+        fragmentTransaction.addToBackStack(null)
 
         // Commit the transaction
         fragmentTransaction.commit()
