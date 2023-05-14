@@ -4,7 +4,7 @@ import androidx.viewpager2.widget.ViewPager2
 import kotlin.math.abs
 
 private const val MIN_SCALE = 0.85f
-private const val MIN_ALPHA = 0.5f
+private const val MIN_ALPHA = 0.85f
 
 class ZoomOutPageTransformer : ViewPager2.PageTransformer {
 

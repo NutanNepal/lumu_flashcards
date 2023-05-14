@@ -13,7 +13,6 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.Lumu_Flashcards_day.NoActionBar">

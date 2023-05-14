@@ -1,12 +1,15 @@
 package com.lumu.flashcards
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import io.nano.tex.LaTeX
+
 
 class MainActivity : AppCompatActivity(),
     MyCategoriesRecyclerViewAdapter.OnCategoryItemClickListener,

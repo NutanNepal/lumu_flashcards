@@ -36,7 +36,7 @@ class FlashcardFragment(
         answerTextView.setLaTeX("\\text{$answer}")
 
         val scale = requireContext().resources.displayMetrics.density
-        val distance = -15000
+        val distance = 15000
         questioncardView.cameraDistance = distance * scale
         answercardView.cameraDistance = distance * scale
         view.setOnClickListener {
