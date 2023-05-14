@@ -18,7 +18,7 @@ import kotlin.random.Random
 class FlashcardActivity: FragmentActivity() {
     // Views
     private lateinit var viewPager: ViewPager2
-    private lateinit var pagerAdapter: FlashcardPagerAdapter
+
     //Saved flashcard instance state
     private var currentPosition: Int = 0
     private var currentSeed: Long = seed()
@@ -34,58 +34,49 @@ class FlashcardActivity: FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Restore the saved instance state if it exists
+        if (savedInstanceState != null) {
+            currentPosition = savedInstanceState.getInt(CURRENT_POSITION_KEY)
+            currentSeed = savedInstanceState.getLong(CURRENT_SEED)
+        }
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // Set the content view for this activity
         setContentView(R.layout.activity_flashcard)
 
         // Set the chapter title from the extra provided by the intent
-        val chapter = intent?.getStringExtra(CHAPTER).toString()
-        this.findViewById<TextView>(R.id.flashcard_title).text = chapter
+        this.findViewById<TextView>(R.id.flashcard_title).text = getchapter()
 
         // Get the ViewPager element from the layout
         viewPager = findViewById(R.id.viewPager)
 
-        // Create a new adapter for the ViewPager
-        pagerAdapter = FlashcardPagerAdapter(supportFragmentManager)
-
         // Set the adapter for the ViewPager
-        viewPager.adapter = pagerAdapter
+        viewPager.adapter = FlashcardPagerAdapter(supportFragmentManager)
+        viewPager.setCurrentItem(currentPosition, false)
 
         // Set the page transformer to the zoom out transformer
         viewPager.setPageTransformer(ZoomOutPageTransformer())
 
-        // Restore the saved instance state if it exists
-        if (savedInstanceState != null) {
-            currentPosition = savedInstanceState.getInt(CURRENT_POSITION_KEY)
-            viewPager.currentItem = currentPosition
-        }
+        // Add an OnPageChangeCallback to the ViewPager to update the current position
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                currentPosition = position
+            }
+        })
     }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        // Restore the current position of the ViewPager
-        currentPosition = savedInstanceState.getInt(CURRENT_POSITION_KEY)
-        currentSeed = savedInstanceState.getLong(CURRENT_SEED)
-        viewPager.currentItem = currentPosition
-    }
-
 
     inner class FlashcardPagerAdapter(fragmentManager: FragmentManager) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
-        private val chapter = intent?.getStringExtra(CHAPTER).toString()
+        private val chapter = getchapter()
         // Flashcard list
-        private val randomSeed = currentSeed
-        val flashcards = parseFlashcards(chapter).shuffled(Random(randomSeed))
+        val flashcards = parseFlashcards(chapter).shuffled(Random(currentSeed))
 
         // Return the number of flashcards
-        override fun getItemCount(): Int = flashcards.size
+        override fun getItemCount(): Int = Int.MAX_VALUE
 
         // Create a new instance of the FlashcardFragment for each page
         override fun createFragment(position: Int): Fragment {
-            currentPosition = position
-            val flashcard = flashcards[position]
+            val flashcard = flashcards[position % flashcards.size]
             return FlashcardFragment.newInstance(flashcard.question, flashcard.answer)
         }
     }
@@ -147,6 +138,10 @@ class FlashcardActivity: FragmentActivity() {
 
     private fun seed(): Long{
         return SystemClock.currentThreadTimeMillis()
+    }
+
+    private fun getchapter(): String{
+        return intent?.getStringExtra(CHAPTER).toString()
     }
 
     companion object {

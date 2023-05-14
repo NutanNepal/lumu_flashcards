@@ -9,17 +9,15 @@
         android:id="@+id/item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
         android:layout_margin="@dimen/text_margin"
-        android:textSize="18sp"
-        android:textAppearance="@style/CustomTextAppearance" />
+        android:textSize="@dimen/normal_font"
+        android:textAppearance="@style/CustomTextAppearanceNormal" />
 
     <TextView
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
         android:layout_margin="@dimen/text_margin"
-        android:textSize="18sp"
-        android:textAppearance="@style/CustomTextAppearance" />
+        android:textSize="@dimen/normal_font"
+        android:textAppearance="@style/CustomTextAppearanceNormal" />
 </LinearLayout>

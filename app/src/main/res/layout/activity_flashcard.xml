@@ -18,10 +18,10 @@
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/CustomTextAppearance"
+            android:textAppearance="@style/CustomTextAppearanceBold"
             android:textColor="@color/white"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:textSize="@dimen/title_font" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"

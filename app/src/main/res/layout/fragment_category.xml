@@ -12,16 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:textAppearance="@style/CustomTextAppearance" />
+        android:textSize="@dimen/normal_font"
+        android:textAppearance="@style/CustomTextAppearanceNormal" />
 
     <TextView
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="18sp"
+        android:textSize="@dimen/normal_font"
         android:layout_margin="@dimen/text_margin"
-        android:textColor="@color/white"
-        android:textAppearance="@style/CustomTextAppearance"/>
+        android:textAppearance="@style/CustomTextAppearanceNormal"/>
 </LinearLayout>

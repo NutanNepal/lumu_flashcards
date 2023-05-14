@@ -21,8 +21,8 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textAppearance="@style/CustomTextAppearance"
-            android:textSize="22sp" />
+            android:textAppearance="@style/CustomTextAppearanceBold"
+            android:textSize="@dimen/title_font" />
 
         <view
             android:id="@+id/view"
