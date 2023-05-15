@@ -2,7 +2,7 @@
 <flashcards>
     <flashcard>
         <question>\text{Fatou's Lemma}</question>
-        <answer>$$\int_X{\lim\inf{f}}\leq\lim\inf{\int_X{f}}$$ and asdafdgwefwrg</answer>
+        <answer></answer>
     </flashcard>
     <flashcard>
         <question>What does it mean for a set $X$ to be total in $L^p$?</question>
@@ -14,6 +14,10 @@
     </flashcard>
     <flashcard>
         <question>Bolzano-Weierstrass theorem and its weak analogue?</question>
+        <answer>what?</answer>
+    </flashcard>
+    <flashcard>
+        <question>Dominated Convergence Theorem</question>
         <answer>what?</answer>
     </flashcard>
 </flashcards>

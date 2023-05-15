@@ -13,6 +13,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
     </style>
 
     <style name="Theme.Lumu_Flashcards_day.NoActionBar">

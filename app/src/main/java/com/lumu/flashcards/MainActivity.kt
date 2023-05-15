@@ -1,8 +1,7 @@
 package com.lumu.flashcards
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,7 @@ import io.nano.tex.LaTeX
 
 class MainActivity : AppCompatActivity(),
     MyCategoriesRecyclerViewAdapter.OnCategoryItemClickListener,
-    MyChaptersRecyclerViewAdapter.OnChapterItemClickListener{
+    MyChaptersRecyclerViewAdapter.OnChapterItemClickListener {
 
     private var currentTitle = "Categories"
 
@@ -31,34 +30,43 @@ class MainActivity : AppCompatActivity(),
 
         // Hide the system window decorations
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        supportActionBar?.hide()
+        supportActionBar!!.hide()
 
-        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true /* enabled by default */) {
-            override fun handleOnBackPressed() {
-                if (currentTitle == "Categories") {
-                    // If already on the CategoriesFragment, call the default back behavior (exit the app)
-                    finish()
-                } else {
-                    // Otherwise, go back to the CategoriesFragment and update the title
-                    currentTitle = "Categories"
-                    replaceFragmentContainer(R.id.fragmentContainerView, CategoriesFragment())
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    if (currentTitle == "Categories") {
+                        // If already on the CategoriesFragment, call the default back behavior (exit the app)
+                        finish()
+                    } else {
+                        // Otherwise, go back to the CategoriesFragment and update the title
+                        currentTitle = "Categories"
+                        replaceFragmentContainer(
+                            R.id.fragmentContainerView,
+                            CategoriesFragment()
+                        )
+                    }
                 }
             }
-        }
         // Add the callback to the activity's back stack
         onBackPressedDispatcher.addCallback(this, callback)
 
-        if (savedInstanceState != null) {
-            currentTitle = savedInstanceState.getString("CURRENT_NAV_STATE", currentTitle) ?: "Categories"
+        this.findViewById<ImageView>(R.id.btn_back).setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
 
-        if (currentTitle == "Categories"){
-            replaceFragmentContainer(R.id.fragmentContainerView,CategoriesFragment())
+        if (savedInstanceState != null) {
+            currentTitle =
+                savedInstanceState.getString("CURRENT_NAV_STATE", currentTitle) ?: "Categories"
         }
-        else{
+
+        if (currentTitle == "Categories") {
+            replaceFragmentContainer(R.id.fragmentContainerView, CategoriesFragment())
+        } else {
             onCategoryItemClick(Category.valueOf(currentTitle))
         }
     }
+
 
     override fun onCategoryItemClick(category: Category) {
         // Update the title with the selected category name
@@ -74,7 +82,7 @@ class MainActivity : AppCompatActivity(),
         startActivity(FlashcardActivity.newIntent(this@MainActivity, chapter))
     }
 
-    private fun replaceFragmentContainer(oldFragment: Int, newFragment: Fragment){
+    fun replaceFragmentContainer(oldFragment: Int, newFragment: Fragment) {
         this.findViewById<TextView>(R.id.textView).text = currentTitle
         // Get the FragmentManager
         val fragmentManager = supportFragmentManager

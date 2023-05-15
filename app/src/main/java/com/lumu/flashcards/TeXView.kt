@@ -27,13 +27,13 @@ class TeXView : View {
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
 
-    private var textSize = 50
+    private var textSize = 60
     private var render: TeXRender? = null
     private val g2 = Graphics2D()
     fun setLaTeX(ltx: String?, color: Int) {
         var w = width
-        if (w == 0) w = 900
-        render = LaTeX.instance().parse(ltx, w, textSize.toFloat(), 18f, color)
+        if (w == 0) w = 920
+        render = LaTeX.instance().parse(ltx, w, textSize.toFloat(), 50f, color)
         requestLayout()
     }
 

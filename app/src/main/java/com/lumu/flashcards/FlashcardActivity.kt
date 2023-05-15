@@ -45,7 +45,7 @@ class FlashcardActivity: FragmentActivity() {
         setContentView(R.layout.activity_flashcard)
 
         // Set the chapter title from the extra provided by the intent
-        this.findViewById<TextView>(R.id.flashcard_title).text = getchapter()
+        this.findViewById<TextView>(R.id.flashcard_title).text = getChapter()
 
         // Get the ViewPager element from the layout
         viewPager = findViewById(R.id.viewPager)
@@ -67,7 +67,7 @@ class FlashcardActivity: FragmentActivity() {
 
     inner class FlashcardPagerAdapter(fragmentManager: FragmentManager) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
-        private val chapter = getchapter()
+        private val chapter = getChapter()
         // Flashcard list
         val flashcards = parseFlashcards(chapter).shuffled(Random(currentSeed))
 
@@ -83,17 +83,27 @@ class FlashcardActivity: FragmentActivity() {
 
     // Parse the flashcards from the XML file
     private fun parseFlashcards(chapterList: String): MutableList<Flashcard> {
-        val fileName = "$chapterList.xml"
-        val inputStream = fileName.let { assets.open(it) }
+        val chapters : List<String> =
+            if(Subjects.isSubjectName(chapterList.replace("\\s".toRegex(), ""))){
+            Subjects.valueOf(chapterList.replace("\\s".toRegex(), "")).topics
+            }
+            else{
+            listOf(chapterList)
+            }
 
-        // Create a new instance of the XmlPullParser interface
-        val parser: XmlPullParser = Xml.newPullParser()
+        val flashcards = mutableListOf<Flashcard>()
+        for (filename in chapters){
+            val fileName = "$filename.xml"
+            val inputStream = fileName.let { assets.open(it) }
 
-        // Set the input stream for the parser to the opened file
-        parser.setInput(inputStream, null)
+            // Create a new instance of the XmlPullParser interface
+            val parser: XmlPullParser = Xml.newPullParser()
 
-        // Parse the XML file
-        return parseXml(parser)
+            // Set the input stream for the parser to the opened file
+            parser.setInput(inputStream, null)
+            flashcards.addAll(parseXml(parser))
+        }
+        return flashcards
     }
 
     // Parse the XML file and return a list of flashcards
@@ -140,7 +150,7 @@ class FlashcardActivity: FragmentActivity() {
         return SystemClock.currentThreadTimeMillis()
     }
 
-    private fun getchapter(): String{
+    private fun getChapter(): String{
         return intent?.getStringExtra(CHAPTER).toString()
     }
 
